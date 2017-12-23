@@ -1,0 +1,9 @@
+__pycache__/
+.spyproject/
+Attempts-which-failed/
+.vscode/
+.idea/
+build.bat
+mml
+mml1
+param
