@@ -61,11 +61,12 @@ def 找二维码(app_name='BlueStacks App Player'):
     
     for i in np.arange(len(targets))[targets==1]:
         continue
-    # 扫最后一个二维码(lastest one
-    print(click_loc_list[i])
-    win32api.SetCursorPos(click_loc_list[i])
-    click()
-    扫二维码()
+    else:
+        # 扫最后一个二维码(lastest one
+        print(click_loc_list[i])
+        win32api.SetCursorPos(click_loc_list[i])
+        click()
+        扫二维码()
 
 sleep(10)
 找二维码()

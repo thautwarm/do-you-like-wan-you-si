@@ -120,13 +120,13 @@ except:
     from utils import dump_model, load_model, read_directory
 
 
-def train(new=False, epoch=100):
+def train(new=False, md_name='mml', epoch=100):
     import os
     dir = os.path.split(__file__)[0]
     try:
         if new:
             raise 
-        ssp = load_model(f'{dir}/mml')
+        ssp = load_model(f'{dir}/{md_name}')
     except:
         print('redef')
         ssp  = SSP(Net(5120, 3000, 1000, 2))
@@ -145,7 +145,7 @@ def train(new=False, epoch=100):
     #
     ssp.fit(X, y, num_epochs=epoch)
 
-    dump_model(ssp, f'{dir}/mml')
+    dump_model(ssp, f'{dir}/{md_name}')
 
     from sklearn.metrics.classification import classification_report, confusion_matrix
 
