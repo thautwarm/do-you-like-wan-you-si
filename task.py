@@ -6,7 +6,20 @@ import numpy as np
 from recognize.ssp import load_model
 from matplotlib import pyplot
 pyplot.interactive(True)
-model = load_model('./recognize/mml')
+_model1 = load_model('recognize\\mml2')
+_model2 = load_model('recognize\\mml6')
+_model5 = load_model('recognize\\mml5')
+_model3 = load_model('recognize\\mml3')
+_model4 = load_model('recognize\\mml4')
+def model(datas):
+    r1 = _model1.predict(datas)
+    r2 = _model2.predict(datas)
+    r3 = _model4.predict(datas)
+    r4 = _model3.predict(datas)
+    r5 = _model1.predict(datas)
+    return np.round((r1 + r2 + r3 + r4 + r5)/5).astype(np.int8)
+
+
 
 def click():
         sleep(0.5*random() + 0.3)
@@ -49,19 +62,19 @@ def 找二维码(app_name='BlueStacks App Player'):
         for i in range(0, np.shape(img)[0] - 1, vertical_split_pixel):
             if last is i:
                 continue
-            click_where = left + 100, height_from + 50 + 100 * last
+            click_where = left + 100, height_from + 50 + last
             print('-> ', last, i)
-            pyplot.figure()
-            pyplot.imshow(img[last:i, :, :])
+#            pyplot.figure()
+#            pyplot.imshow(img[last:i, :, :])
             yield click_where, np.transpose(img[last:i, :, :], (2, 0, 1))
             last = i
     click_loc_list, datas = zip(*get_pics())
-    targets = model.predict(datas)
+    targets = model(datas)
     print(targets)
-    
-    for i in np.arange(len(targets))[targets==1]:
-        continue
-    else:
+    ids = np.arange(len(targets))[targets==1]
+    if any(ids):
+        print('found')
+        i = ids[-1]
         # 扫最后一个二维码(lastest one
         print(click_loc_list[i])
         win32api.SetCursorPos(click_loc_list[i])

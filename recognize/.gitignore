@@ -4,6 +4,6 @@ Attempts-which-failed/
 .vscode/
 .idea/
 build.bat
-mml
-mml1
 param
+mml*
+oldpos/

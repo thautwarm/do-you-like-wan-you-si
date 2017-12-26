@@ -8,16 +8,17 @@ Created on Fri Dec 22 23:39:55 2017
 import torch
 import numpy as np
 from linq import Flow
-from functools import reduce
+
 F = torch.nn.functional 
 D = torch.autograd.grad
 Rand = torch.rand
+import os
+dir = os.path.split(__file__)[0]
 
-
-def and_then(*fs):
-    def call(x):
-        return reduce(lambda a, b: b(a), fs, x)
-    return call
+try:
+    from .utils import and_then, img_scale, img_redim
+except:
+    from utils import and_then, img_scale, img_redim
 
 def Var(v):
     return torch.autograd.Variable(v, requires_grad=True)
@@ -92,6 +93,8 @@ class SSP(torch.nn.Module):
         labels  = Val(torch.from_numpy(labels).long())
         optimizer = torch.optim.Adam(self.parameters(), lr=lr) 
         criterion = torch.nn.CrossEntropyLoss()
+        threshold = 0.01 * len(samples)
+        Loss = np.repeat(np.nan, 10)
         for epoch in range(num_epochs):
             loss = 0
             optimizer.zero_grad()
@@ -103,9 +106,15 @@ class SSP(torch.nn.Module):
             loss.backward()
             optimizer.step()
             print('Epoch [%d/%d], Loss: %.4f'%(epoch+1, num_epochs, loss.data[0]))
-    
+            Loss[epoch%10] = loss.data[0]
+            if all(Loss==Loss) and np.max(Loss) < threshold:
+                print('converged')
+                return np.max(Loss)
+        return np.nanmax(Loss)
+                
+                
     def predict(self, samples):
-        samples = [np.reshape(sample, newshape=(1, *shape)) for sample,shape in map(lambda x: (x, x.shape), samples)]
+        samples = [np.reshape(img_redim(sample), newshape=(1, *shape)) for sample,shape in map(lambda x: (x, x.shape), samples)]
         return np.argmax(
                 [outs[0].data.numpy().flatten() for outs in 
                  map(and_then(torch.from_numpy, 
@@ -118,11 +127,18 @@ try:
     from .utils import dump_model, load_model, read_directory
 except:
     from utils import dump_model, load_model, read_directory
+    
+def make_data(X, y):
+    def batch(size=50):
+        while True:
+            ids = np.random.permutation(len(X))[:size]
+            yield  [and_then(img_scale, img_redim)(X[i]) 
+                    for i in ids], y[ids]
+    return batch
+            
 
-
-def train(new=False, md_name='mml', epoch=100):
-    import os
-    dir = os.path.split(__file__)[0]
+def train(new=False, md_name='mml', epoch=80, batch_size=80, max_cycle=5):
+    
     try:
         if new:
             raise 
@@ -132,19 +148,17 @@ def train(new=False, md_name='mml', epoch=100):
         ssp  = SSP(Net(5120, 3000, 1000, 2))
 
     X_pos, y_pos = read_directory(f'{dir}/pos', 1)
-
     X_neg, y_neg = read_directory(f'{dir}/neg', 0)
-
-
     X = X_pos + X_neg
-    y = np.vstack((y_pos, y_neg))
-
-    ids = np.random.permutation(len(X))
-    X = [X[i] for i in ids]
-    y = y[ids]
-    #
-    ssp.fit(X, y, num_epochs=epoch)
-
+    y = np.vstack((y_pos, y_neg))        
+    data_helper = make_data(X, y)
+    for batch_x, batch_y in Flow(data_helper(batch_size))\
+                                .Filter(
+                                        lambda _, b_y: 0.3 < sum(b_y)/batch_size < 0.7 )\
+                                .Take(max_cycle)\
+                                .Unboxed():
+        ssp.fit(batch_x, batch_y, num_epochs=epoch)
+        
     dump_model(ssp, f'{dir}/{md_name}')
 
     from sklearn.metrics.classification import classification_report, confusion_matrix
