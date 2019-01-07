@@ -1,6 +1,8 @@
-__pycache__/
+**__pycache__/
 .spyproject/
 Attempts-which-failed/
+fgo/fgo_data/mml
+fgo/fgo_data/cls_*
 .vscode/
 .idea/
 build.bat

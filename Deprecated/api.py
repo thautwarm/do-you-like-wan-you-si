@@ -1,5 +1,5 @@
 import win32api, win32com, win32con, win32gui
-import pythoncom, pyHook
+import pythoncom
 
 class Mouse:
     # Module `Mouse`

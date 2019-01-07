@@ -47,7 +47,7 @@ def read_directory(dir, label):
                      np.array,
                      )(_)
             for _ in files],  np.atleast_2d(np.repeat([label], len(files))).T
-            
+
 #    return [np.transpose(np.array(Image.open(_).convert('RGB')), (2, 0, 1)) for _ in files], np.atleast_2d(np.repeat([label], len(files))).T
 
 

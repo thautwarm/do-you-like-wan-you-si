@@ -26,7 +26,7 @@ def click():
         Mouse.left_down()
         sleep(0.01*random() + 0.05)
         Mouse.left_up()
-    
+
 def 扫二维码(app_name='BlueStacks App Player'):
     sleep(0.2*random()+0.5)
     Mouse.left_down()
@@ -34,19 +34,19 @@ def 扫二维码(app_name='BlueStacks App Player'):
     Mouse.left_up()
     sleep(0.1*random()+0.1)
     left, top, right, bottom = get_loc(app_name)
-    win32api.SetCursorPos([(left + right) // 2, bottom - 100])    
+    win32api.SetCursorPos([(left + right) // 2, bottom - 100])
     def new_recognized():
         sleep(random() + 0.3)
         Mouse.left_down()
         sleep(random() + 0.1)
         Mouse.left_up()
-    
+
     def close():
         sleep(random()+0.1)
         win32api.SetCursorPos([left+20, top + 90])
         click()
         sleep(random()+0.1)
-        
+
     new_recognized()
     close()
 
