@@ -21,12 +21,6 @@
    - `PyQt5`:
       Anacodna预装.可以通过`pip install`安装.
 
-   - `wisepy`等
-
-      这些依赖最终会被消除.它们是我平时快速实现prototype使用的个人package, 功能强大但实现evil.
-
-      `wisepy`是一个python命令行框架,用来代替每次都需要查文档的`argparse`.
-
    - [Pytorch](https://pytorch.org/):
 
       **安装它, 几乎是在使用该项目时, 唯一耗时的步骤**.
@@ -38,25 +32,26 @@
    对于anaconda用户, Python依赖的安装方法:
 
    ```
-   pip install wisepy generic_classifier
+   #无Nvidia显卡用户: conda install pytorch-cpu torchvision-cpu -c pytorch
+   conda install pytorch torchvision cudatoolkit=9.0 -c pytorch
+   ```
+
+   对于miniconda用户:
+
+   ```
+   conda install numpy scipy PyQt5
 
    #无Nvidia显卡用户: conda install pytorch-cpu torchvision-cpu -c pytorch
    conda install pytorch torchvision cudatoolkit=9.0 -c pytorch
    ```
 
-   对于miniconda用户, 你需要**增加额外步骤**:
-
-   ```
-   conda install numpy scipy PyQt5
-   ```
-
-   对于pip用户, 你需要**增加额外步骤**:
+   对于pip用户, 你需要:
 
    - `pip install PyQt5`
    - 从 https://www.lfd.uci.edu/~gohlke/pythonlibs/ 下载 `win32api win32con win32gui scipy numpy`并用pip安装.
+   - `pip install torch`, 对无Nvidia显卡的用户, 下载命令详见 https://pytorch.org/ .
 
-
-## 使用方法
+## 贪玩方法
 
 
 ### 模型训练
