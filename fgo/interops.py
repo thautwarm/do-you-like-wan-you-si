@@ -163,7 +163,6 @@ class Loop(Event):
 class If(Event):
     cond: 'Function'
     do: Event
-    elsedo: Event
 
     def __init__(self, cond, do):
         self.cond = cond

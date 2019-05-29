@@ -1,4 +1,6 @@
 import sys
+import compat
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal, QTimer
 from PyQt5.QtGui import QCursor

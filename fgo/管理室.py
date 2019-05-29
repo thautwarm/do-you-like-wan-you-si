@@ -1,4 +1,5 @@
 from fgo.common import *
+from fgo.model import stable_predict
 from datetime import datetime
 random.seed(datetime.now())
 
@@ -39,6 +40,27 @@ class 每日任务(扶她狗):
         return (510 - 100) * (1 - random.random()) + 100
 
 
+def check_if_exhausted(ctx):
+    print("checking if exhausted...")
+    x = stable_predict() == "exhausted"
+    print(f"status: {x}")
+    return x
+
+def remove_tiredness(ctx):
+    ret =  MoveTo(700, 330)
+    ret += Wait(Range(0.2,  0.5))
+    
+    ret += click()
+    ret += Wait(Range(1.2,  1.5))
+    
+    ret += MoveTo(850, 570)
+    ret += Wait(Range(0.2,  0.5))
+
+    ret += click()
+    ret += Wait(Range(2.5, 3.0))
+
+    fix_dpi(ret).eval(ctx)
+
 def 随便选任务():
     def _():
         # if 随机选择:
@@ -49,18 +71,18 @@ def 随便选任务():
         # yield MoveTo(e.x, e.y)
         # else:
         yield MoveTo(923, 150)
-
-
         yield click()
-        yield Wait(Exact(0.5))
+        yield Wait(Exact(1.2))
 
-        yield MoveTo(644, 340)  # 选择第一个助战
+        yield If(Function(check_if_exhausted), Function(remove_tiredness))
+        
+        yield MoveTo(644, 486)  # 选择第一个助战
         yield click()
-        yield Wait(Exact(0.5))
+        yield Wait(Exact(1.2))
 
         yield MoveTo(1200, 675)  # 开战
         yield click()
-        yield Wait(Exact(0.5))
+        yield Wait(Exact(1.2))
     return reduce(Compose, _())
 
 
@@ -81,7 +103,7 @@ def _打活动():
     yield MoveTo(e.x, e.y)
     yield click()
 
-    yield MoveTo(644, 273)  # 选择第一个助战
+    yield MoveTo(1107, 486)  # 选择第一个助战
     yield click()
 
     yield MoveTo(1200, 675)  # 开战  # yield click()
