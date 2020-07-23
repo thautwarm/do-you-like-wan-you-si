@@ -19,7 +19,7 @@
       注: 在没有visual studio c++ build tools的情况下, 从PyPI源中安装`scipy`或`numpy`会失败.
 
    - `PyQt5`:
-      Anacodna预装.可以通过`pip install`安装.
+      Anaconda预装.可以通过`pip install`安装.
 
    - [Pytorch](https://pytorch.org/):
 
